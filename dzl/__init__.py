@@ -1,1 +1,1 @@
-name = "dzl"
+from dzl.lib import *
