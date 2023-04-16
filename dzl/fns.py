@@ -9,7 +9,7 @@ import shlex
 
 my_env = os.environ.copy()
 
-dirs = AppDirs("dzl", "zetxx", "0.0.1", False)
+dirs = AppDirs("dzl", "zetxx", "0.0.2", False)
 dayzId = 221100
 steamExec = shutil.which("steam")
 dayzEnv = my_env = os.environ.copy()
