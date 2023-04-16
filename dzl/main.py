@@ -1,3 +1,4 @@
+debug = True
 import customtkinter
 from lib import init, redrawServerList, appendServer, redrawServerList
 
