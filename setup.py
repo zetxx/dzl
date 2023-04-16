@@ -14,7 +14,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'dzl=dzl.main:mainrun'
+            'dzl=dzl.main:run'
         ]
     },
     packages=setuptools.find_packages(),
