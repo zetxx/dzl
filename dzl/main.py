@@ -1,5 +1,5 @@
 import customtkinter
-from dzl.lib import init, redrawServerList, appendServer, redrawServerList
+from lib import init, redrawServerList, appendServer, redrawServerList
 
 def run():
     init()
