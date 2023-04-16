@@ -1,8 +1,8 @@
 import customtkinter
-import lib
+from dzl.lib import init, redrawServerList, appendServer, redrawServerList
 
 def run():
-    lib.init()
+    init()
 
     customtkinter.set_appearance_mode("system")
     root = customtkinter.CTk()
@@ -20,16 +20,13 @@ def run():
     label2.pack(padx=5, pady=5)
     frameMainServerList = customtkinter.CTkFrame(master=root)
     frameMainServerList.grid(row=1, column=0, padx=5, pady=(5, 0), sticky='NSEW')
-    lib.redrawServerList(frameMainServerList)
+    redrawServerList(frameMainServerList)
 
 
 
-    def appendServer():
-        lib.appendServer(frameServerAdd)
-        lib.redrawServerList(frameMainServerList)
-
-    def runz():
-        lib.runz(host="95.216.224.81", port="2302")
+    def addBtnEvenet():
+        appendServer(frameServerAdd)
+        redrawServerList(frameMainServerList)
 
     frameServerAdd = customtkinter.CTkFrame(master=root, border_width=2)
     frameServerAdd.grid_rowconfigure((0), weight=1)
@@ -54,7 +51,7 @@ def run():
     asqp = customtkinter.CTkEntry(master=frameServerAdd, fg_color="gray", height=10)
     asqp.grid(row=1, column=7, padx=2)
 
-    customtkinter.CTkButton(master=frameServerAdd, text="Add", command=appendServer).grid(row=1, column=8, padx=20)
+    customtkinter.CTkButton(master=frameServerAdd, text="Add", command=addBtnEvenet).grid(row=1, column=8, padx=20)
     customtkinter.CTkButton(master=frameServerAdd, text="Set Steam Root").grid(row=1, column=9, padx=20)
 
     root.mainloop()
