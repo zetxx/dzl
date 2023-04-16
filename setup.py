@@ -17,5 +17,5 @@ setup(
             'dzl=dzl.main:mainrun'
         ]
     },
-    packages=['dzl'],
+    packages=setuptools.find_packages(),
     zip_safe=False)
