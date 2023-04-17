@@ -25,9 +25,9 @@ def init():
         server.write("[]")
         server.close()
 
-def setConfig(path):
+def setConfig(steamHome):
     config = open(os.path.join(dirs.user_data_dir, 'config.json'),'w')
-    config.write(json.dumps({"steamHome": path}))
+    config.write(json.dumps({"steamHome": steamHome}))
     config.close()
 
 def writeFileVar(dict):
@@ -77,10 +77,6 @@ def runz(host, port, qport, mods=False):
     if mods:
         m = m + f" -mod={mods}"
     return lambda: runza(host, port, qport, mods=m)
-
-def browserButton():
-    filename = customtkinter.filedialog.askdirectory()
-    setConfig(filename)
 
 def redrawServerList(root):
     for child in root.winfo_children():
@@ -145,3 +141,9 @@ def mod2base64(num):
             stop = tl
         tl = tl -1
     return b64[0:stop]
+
+def steamRootAdd(el):
+    filename = customtkinter.filedialog.askdirectory()
+    setConfig(steamHome=filename)
+    el.configure(text=filename)
+    el.update()

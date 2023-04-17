@@ -10,7 +10,7 @@ if __package__:
         sys.path.append(root_dir)
 
 import customtkinter
-from fns import init, redrawServerList, appendServer, redrawServerList
+from fns import init, redrawServerList, appendServer, redrawServerList, getConfig, steamRootAdd
 
 def run():
     init()
@@ -44,7 +44,7 @@ def run():
     frameServerAdd.grid_columnconfigure((8), weight=1)
     frameServerAdd.grid(row=2, column=0, padx=5, pady=(5, 0), sticky='NSEW')
 
-    customtkinter.CTkLabel(master=frameServerAdd, text="Config").grid(row=0, column=0, columnspan=10, padx=2, pady=20, sticky='NSEW')
+    customtkinter.CTkLabel(master=frameServerAdd, text="Config").grid(row=0, column=0, columnspan=12, padx=2, pady=20, sticky='NSEW')
 
     customtkinter.CTkLabel(master=frameServerAdd, text="Name").grid(row=1, column=0, padx=2)
     asname = customtkinter.CTkEntry(master=frameServerAdd, fg_color="gray")
@@ -63,7 +63,10 @@ def run():
     asqp.grid(row=1, column=7, padx=2)
 
     customtkinter.CTkButton(master=frameServerAdd, text="Add", command=addBtnEvenet).grid(row=1, column=8, padx=20)
-    customtkinter.CTkButton(master=frameServerAdd, text="Set Steam Root").grid(row=1, column=9, padx=20)
+    customtkinter.CTkLabel(master=frameServerAdd, text="").grid(row=1, column=9, padx=20)
+    steamRoot = customtkinter.CTkLabel(master=frameServerAdd, text=getConfig()["steamHome"])
+    steamRoot.grid(row=1, column=10, padx=2)
+    customtkinter.CTkButton(master=frameServerAdd, text="Set Steam Root", command=lambda: steamRootAdd(el=steamRoot)).grid(row=1, column=11, padx=20)
 
     root.mainloop()
 
