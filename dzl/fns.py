@@ -78,6 +78,14 @@ def runz(host, port, qport, mods=False):
         m = m + f" -mod={mods}"
     return lambda: runza(host, port, qport, mods=m)
 
+def serverInfo(root, server, child, idx):
+    p = "FP"
+    if not server["firstPersonOnly"]:
+        p = "FP/TP"
+
+    txt = f'{child["name"]}:(T:{server["time"]};P:{server["players"]}/{server["maxPlayers"]};{p})'
+    customtkinter.CTkLabel(master=root, text=txt).grid(row=idx, column=0, padx=10)
+
 def redrawServerList(root):
     for child in root.winfo_children():
         child.destroy()
@@ -85,7 +93,7 @@ def redrawServerList(root):
     s = servers()
     for idx, child in enumerate(s):
         server = queryServer(host=child["host"], port=child["port"]["query"])
-        customtkinter.CTkLabel(master=root, text=child["name"]).grid(row=idx, column=0, padx=10)
+        serverInfo(root, server, child, idx)
         customtkinter.CTkButton(master=root, text="Run", command=runz(child["host"], child["port"]["game"], child["port"]["query"], mods=server["-mod"])).grid(row=idx, column=1)
 
 def appendServer(root):
