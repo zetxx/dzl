@@ -72,10 +72,11 @@ def runza(host, port, qport, mods):
     writeFileVar({"DAYZ_QUERY_HOST": host, "DAYZ_QUERY_PORT": str(qport)})
     subprocess.Popen(shlex.split(arg), env=dayzEnv)
 
-def runz(host, port, qport, mods=False):
+def runz(host, port, qport, name, mods=False):
     m = ""
     if mods:
         m = m + f" -mod={mods}"
+    print(f"{name}/{mods}")
     return lambda: runza(host, port, qport, mods=m)
 
 def serverInfo(root, server, child, idx):
@@ -94,7 +95,7 @@ def redrawServerList(root):
     for idx, child in enumerate(s):
         server = queryServer(host=child["host"], port=child["port"]["query"])
         serverInfo(root, server, child, idx)
-        customtkinter.CTkButton(master=root, text="Run", command=runz(child["host"], child["port"]["game"], child["port"]["query"], mods=server["-mod"])).grid(row=idx, column=1)
+        customtkinter.CTkButton(master=root, text="Run", command=runz(child["host"], child["port"]["game"], child["port"]["query"], child["name"], mods=server["-mod"])).grid(row=idx, column=1)
 
 def appendServer(root):
     fields = [["name"], ["host"], ["port", "game"], ["port", "query"]]
@@ -130,6 +131,7 @@ def queryServer(host, port):
     return result
 
 def dec2base64(num):
+    oldNum = num
     charDict = []
     while num > 0:
         byte = num & 0xff
@@ -138,7 +140,9 @@ def dec2base64(num):
 
     char_bytes = bytes(charDict)
     b64_bytes = base64.b64encode(char_bytes)
-    return b64_bytes.decode("utf-8")
+    r = b64_bytes.decode("utf-8")
+    print(f"{oldNum}@{r}")
+    return r
 
 def mod2base64(num):
     b64 = dec2base64(num)
