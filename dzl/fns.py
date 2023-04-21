@@ -125,6 +125,7 @@ def queryServer(host, port):
         mods = ""
         for record in result["mods"]:
             mod = mod2base64(record["steamWorkshopId"])
+            print(f"{record}>{mod}")
             mods += f"@{mod};"
         result["-mod"] = mods[0:len(mods)-1].replace("/", "-")
 
@@ -138,11 +139,7 @@ def dec2base64(num):
         num >>= 8
         charDict.append(byte)
 
-    char_bytes = bytes(charDict)
-    b64_bytes = base64.b64encode(char_bytes)
-    r = b64_bytes.decode("utf-8")
-    print(f"{oldNum}@{r}")
-    return r
+    return base64.b64encode(bytes(charDict)).decode("utf-8")
 
 def mod2base64(num):
     b64 = dec2base64(num)
