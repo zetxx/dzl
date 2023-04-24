@@ -68,7 +68,6 @@ def runza(host, port, qport, mods):
     dayzEnv["STEAM_ROOT"] = getConfig()["steamHome"]
     dayzEnv["DAYZ_QUERY_HOST"] = host
     dayzEnv["DAYZ_QUERY_PORT"] = str(qport)
-    # print(arg, dayzEnv)
     writeFileVar({"DAYZ_QUERY_HOST": host, "DAYZ_QUERY_PORT": str(qport)})
     subprocess.Popen(shlex.split(arg), env=dayzEnv)
 
@@ -79,13 +78,25 @@ def runz(host, port, qport, name, mods=False):
     print(f"{name}/{mods}")
     return lambda: runza(host, port, qport, mods=m)
 
-def serverInfo(root, server, child, idx):
+def serverInfoRedraw(label, server, child):
+    server = queryServer(host=child["host"], port=child["port"]["query"])
+    label.configure(text=serverInfoText(child, server))
+    label.update()
+
+def reloadEv(label, server, child):
+    return lambda: serverInfoRedraw(label, server, child)
+
+def serverInfoText(child, server):
     p = "FP"
     if not server["firstPersonOnly"]:
         p = "FP/TP"
 
-    txt = f'{child["name"]}:(T:{server["time"]};P:{server["players"]}/{server["maxPlayers"]};{p})'
-    customtkinter.CTkLabel(master=root, text=txt).grid(row=idx, column=0, padx=10)
+    return f'{child["name"]}:(T:{server["time"]};P:{server["players"]}/{server["maxPlayers"]};{p})'
+
+def serverInfo(root, server, child, idx):
+    infoLabel = customtkinter.CTkLabel(master=root, text=serverInfoText(child, server))
+    infoLabel.grid(row=idx, column=0, padx=10)
+    return infoLabel
 
 def redrawServerList(root):
     for child in root.winfo_children():
@@ -94,8 +105,10 @@ def redrawServerList(root):
     s = servers()
     for idx, child in enumerate(s):
         server = queryServer(host=child["host"], port=child["port"]["query"])
-        serverInfo(root, server, child, idx)
-        customtkinter.CTkButton(master=root, text="Run", command=runz(child["host"], child["port"]["game"], child["port"]["query"], child["name"], mods=server["-mod"])).grid(row=idx, column=1)
+        infoLabel = serverInfo(root, server, child, idx)
+        customtkinter.CTkButton(master=root, text="Reload", command=reloadEv(infoLabel, server, child)).grid(row=idx, column=1)
+        customtkinter.CTkLabel(master=root, text=' ').grid(row=idx, column=2)
+        customtkinter.CTkButton(master=root, text="Run", command=runz(child["host"], child["port"]["game"], child["port"]["query"], child["name"], mods=server["-mod"])).grid(row=idx, column=3)
 
 def appendServer(root):
     fields = [["name"], ["host"], ["port", "game"], ["port", "query"]]
