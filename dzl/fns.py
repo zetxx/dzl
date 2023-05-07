@@ -46,8 +46,8 @@ def getConfig():
     steamHome = sr["steamHome"]
     return {
         "steamHome": steamHome,
-        "gameDir": f"{steamHome}/common/DayZ",
-        "workshopDir": f"{steamHome}/workshop/content/{dayzId}"
+        "gameDir": f"{steamHome}/steamapps/common/DayZ",
+        "workshopDir": f"{steamHome}/steamapps/workshop/content/{dayzId}"
     }
 
 def serverAppend(single):
@@ -75,11 +75,10 @@ def runza(config, mods):
     subprocess.Popen(shlex.split(arg), env=dayzEnv)
 
 def runz(config, mods=False):
-    # host, port, qport, name
     m = ""
     if mods:
         m = m + f" -mod={mods}"
-    print(f'{config["port"]}/{mods}')
+    # print(f'{config["port"]}/{mods}')
     return lambda: runza(config, mods=m)
 
 def serverInfoRedraw(label, child):
@@ -111,11 +110,25 @@ def redrawServerList(root):
     s = servers()
     for idx, child in enumerate(s):
         server = queryServer(host=child["host"], port=child["port"]["query"])
+        if server and "mods" in server and len(server["mods"]) > 0:
+            linkMods(server["mods"])
         infoLabel = serverInfo(root, server, child, idx)
         customtkinter.CTkButton(master=root, text="Reload", command=reloadEv(infoLabel, child)).grid(row=idx, column=1)
         customtkinter.CTkLabel(master=root, text=' ').grid(row=idx, column=2)
         if server != False:
             customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=server["-mod"])).grid(row=idx, column=3)
+
+def linkMods(list):
+    cnf = getConfig()
+    print(cnf)
+    for element in list:
+        dst = os.path.join(cnf["gameDir"], f'@{element["base64"]}')
+        src = os.path.join(cnf["workshopDir"], str(element['steamWorkshopId']))
+        if not os.path.exists(dst):
+            if not os.path.exists(src):
+                print(f'Missing mod: {element["name"]}')
+            else:
+                os.symlink(src, dst)
 
 def appendServer(root):
     fields = [["name"], ['igName'], ["host"], ["port", "game"], ["port", "query"]]
@@ -146,11 +159,13 @@ def queryServer(host, port):
     result["-mod"] = False
     if len(result["mods"]) > 0:
         mods = ""
-        for record in result["mods"]:
+        for idx, record in enumerate(result["mods"]):
             mod = mod2base64(record["steamWorkshopId"])
-            print(f"{record}>{mod}")
+            mod = mod[0:len(mod)-1].replace("/", "-")
+            result["mods"][idx]["base64"] = mod
             mods += f"@{mod};"
-        result["-mod"] = mods[0:len(mods)-1].replace("/", "-")
+            # print(f"{record}>{mod}")
+        result["-mod"] = mods
 
     return result
 
