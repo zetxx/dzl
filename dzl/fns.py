@@ -63,30 +63,36 @@ def servers():
     s.close()
     return json.loads(sr)
 
-def runza(host, port, qport, mods):
-    arg = f"{steamExec} -applaunch {dayzId} -connect {host}:{port}{mods}"
+def runza(config, mods):
+    arg = f'{steamExec} -applaunch {dayzId} -connect {config["host"]}:{config["port"]["game"]}'
+    if "igName" in config:
+        arg += f' -name {config["igName"]}'
+    arg += mods
     dayzEnv["STEAM_ROOT"] = getConfig()["steamHome"]
-    dayzEnv["DAYZ_QUERY_HOST"] = host
-    dayzEnv["DAYZ_QUERY_PORT"] = str(qport)
-    writeFileVar({"DAYZ_QUERY_HOST": host, "DAYZ_QUERY_PORT": str(qport)})
+    dayzEnv["DAYZ_QUERY_HOST"] = config["host"]
+    dayzEnv["DAYZ_QUERY_PORT"] = str(config["port"]["game"])
+    writeFileVar({"DAYZ_QUERY_HOST": config["host"], "DAYZ_QUERY_PORT": str(config["port"]["game"])})
     subprocess.Popen(shlex.split(arg), env=dayzEnv)
 
-def runz(host, port, qport, name, mods=False):
+def runz(config, mods=False):
+    # host, port, qport, name
     m = ""
     if mods:
         m = m + f" -mod={mods}"
-    print(f"{name}/{mods}")
-    return lambda: runza(host, port, qport, mods=m)
+    print(f'{config["port"]}/{mods}')
+    return lambda: runza(config, mods=m)
 
-def serverInfoRedraw(label, server, child):
+def serverInfoRedraw(label, child):
     server = queryServer(host=child["host"], port=child["port"]["query"])
     label.configure(text=serverInfoText(child, server))
     label.update()
 
-def reloadEv(label, server, child):
-    return lambda: serverInfoRedraw(label, server, child)
+def reloadEv(label, child):
+    return lambda: serverInfoRedraw(label, child)
 
 def serverInfoText(child, server):
+    if server == False:
+        return f'{child["name"]}:(N/A)'
     p = "FP"
     if not server["firstPersonOnly"]:
         p = "FP/TP"
@@ -106,12 +112,13 @@ def redrawServerList(root):
     for idx, child in enumerate(s):
         server = queryServer(host=child["host"], port=child["port"]["query"])
         infoLabel = serverInfo(root, server, child, idx)
-        customtkinter.CTkButton(master=root, text="Reload", command=reloadEv(infoLabel, server, child)).grid(row=idx, column=1)
+        customtkinter.CTkButton(master=root, text="Reload", command=reloadEv(infoLabel, child)).grid(row=idx, column=1)
         customtkinter.CTkLabel(master=root, text=' ').grid(row=idx, column=2)
-        customtkinter.CTkButton(master=root, text="Run", command=runz(child["host"], child["port"]["game"], child["port"]["query"], child["name"], mods=server["-mod"])).grid(row=idx, column=3)
+        if server != False:
+            customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=server["-mod"])).grid(row=idx, column=3)
 
 def appendServer(root):
-    fields = [["name"], ["host"], ["port", "game"], ["port", "query"]]
+    fields = [["name"], ['igName'], ["host"], ["port", "game"], ["port", "query"]]
     valid = True
     server = {}
     for child in root.winfo_children():
@@ -132,7 +139,10 @@ def appendServer(root):
 
 def queryServer(host, port):
     response = requests.get(f"https://dayzsalauncher.com/api/v1/query/{host}/{port}")
-    result = json.loads(response.text)["result"]
+    resp = json.loads(response.text)
+    if "error" in resp:
+        return False
+    result = resp["result"]
     result["-mod"] = False
     if len(result["mods"]) > 0:
         mods = ""
