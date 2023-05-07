@@ -120,7 +120,6 @@ def redrawServerList(root):
 
 def linkMods(list):
     cnf = getConfig()
-    print(cnf)
     for element in list:
         dst = os.path.join(cnf["gameDir"], f'@{element["base64"]}')
         src = os.path.join(cnf["workshopDir"], str(element['steamWorkshopId']))
