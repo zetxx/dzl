@@ -113,10 +113,10 @@ def redrawServerList(root):
         if server and "mods" in server and len(server["mods"]) > 0:
             linkMods(server["mods"])
         infoLabel = serverInfo(root, server, child, idx)
-        customtkinter.CTkButton(master=root, text="Reload", command=reloadEv(infoLabel, child)).grid(row=idx, column=1)
+        customtkinter.CTkButton(master=root, text="Reload", command=reloadEv(infoLabel, child), fg_color="#ffd900", text_color="#474433").grid(row=idx, column=1)
         customtkinter.CTkLabel(master=root, text=' ').grid(row=idx, column=2)
         if server != False:
-            customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=server["-mod"])).grid(row=idx, column=3)
+            customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=server["-mod"]), fg_color="#fc6f6f", text_color="#473333").grid(row=idx, column=3)
 
 def linkMods(list):
     cnf = getConfig()
