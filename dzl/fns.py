@@ -111,21 +111,21 @@ def redrawServerList(root):
     for idx, child in enumerate(s):
         server = queryServer(host=child["host"], port=child["port"]["query"])
         if server and "mods" in server and len(server["mods"]) > 0:
-            linkMods(server["mods"])
+            linkMods(server)
         infoLabel = serverInfo(root, server, child, idx)
         customtkinter.CTkButton(master=root, text="Reload", command=reloadEv(infoLabel, child), fg_color="#ffd900", text_color="#474433").grid(row=idx, column=1)
         customtkinter.CTkLabel(master=root, text=' ').grid(row=idx, column=2)
         if server != False:
             customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=server["-mod"]), fg_color="#fc6f6f", text_color="#473333").grid(row=idx, column=3)
 
-def linkMods(list):
+def linkMods(server):
     cnf = getConfig()
-    for element in list:
+    for element in server["mods"]:
         dst = os.path.join(cnf["gameDir"], f'@{element["base64"]}')
         src = os.path.join(cnf["workshopDir"], str(element['steamWorkshopId']))
         if not os.path.exists(dst):
             if not os.path.exists(src):
-                print(f'Missing mod: {element["name"]}')
+                print(f'Missing mod: {element["name"]} [{element["steamWorkshopId"]}] ({server["name"]})')
             else:
                 os.symlink(src, dst)
 
