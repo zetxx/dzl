@@ -119,6 +119,9 @@ def redrawServerList(root):
             customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=server["-mod"]), fg_color="#fc6f6f", text_color="#473333").grid(row=idx, column=3)
 
 def linkMods(server):
+    print('/////////////////////////////////////')
+    print(f'Loading mods for mod: {server["name"]}')
+    print('\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\')
     cnf = getConfig()
     for element in server["mods"]:
         dst = os.path.join(cnf["gameDir"], f'@{element["base64"]}')
