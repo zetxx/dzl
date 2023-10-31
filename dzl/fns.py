@@ -117,6 +117,7 @@ def redrawServerList(root):
         customtkinter.CTkLabel(master=root, text=' ').grid(row=idx, column=2)
         if server != False:
             customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=server["-mod"]), fg_color="#fc6f6f", text_color="#473333").grid(row=idx, column=3)
+        customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=False), fg_color="#fc6f6f", text_color="#473333").grid(row=idx, column=3)
 
 def linkMods(server):
     print('/////////////////////////////////////')
