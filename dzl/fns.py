@@ -81,13 +81,17 @@ def runz(config, mods=False):
     # print(f'{config["port"]}/{mods}')
     return lambda: runza(config, mods=m)
 
-def serverInfoRedraw(label, child):
+def serverInfoRedraw(label, child, runBtn):
     server = queryServer(host=child["host"], port=child["port"]["query"])
     label.configure(text=serverInfoText(child, server))
+    # bst = runBtn.cget("state")
+    if server:
+        runBtn.configure(command=runz(child, mods=server['-mod']))
+        runBtn.update()
     label.update()
 
-def reloadEv(label, child):
-    return lambda: serverInfoRedraw(label, child)
+def reloadEv(label, child, runBtn):
+    return lambda: serverInfoRedraw(label, child, runBtn)
 
 def serverInfoText(child, server):
     if server == False:
@@ -113,11 +117,13 @@ def redrawServerList(root):
         if server and "mods" in server and len(server["mods"]) > 0:
             linkMods(server)
         infoLabel = serverInfo(root, server, child, idx)
-        customtkinter.CTkButton(master=root, text="Reload", command=reloadEv(infoLabel, child), fg_color="#ffd900", text_color="#474433").grid(row=idx, column=1)
         customtkinter.CTkLabel(master=root, text=' ').grid(row=idx, column=2)
         if server != False:
-            customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=server["-mod"]), fg_color="#fc6f6f", text_color="#473333").grid(row=idx, column=3)
-        customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=False), fg_color="#fc6f6f", text_color="#473333").grid(row=idx, column=3)
+            runBtn = customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=server["-mod"]), fg_color="#fc6f6f", text_color="#473333")
+        else:
+            runBtn = customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=False), fg_color="#fc6f6f", text_color="#473333")
+        runBtn.grid(row=idx, column=3)
+        customtkinter.CTkButton(master=root, text="Reload", command=reloadEv(infoLabel, child, runBtn), fg_color="#ffd900", text_color="#474433").grid(row=idx, column=1)
 
 def linkMods(server):
     print('/////////////////////////////////////')
