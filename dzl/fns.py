@@ -72,6 +72,7 @@ def runza(config, mods):
     dayzEnv["DAYZ_QUERY_HOST"] = config["host"]
     dayzEnv["DAYZ_QUERY_PORT"] = str(config["port"]["game"])
     writeFileVar({"DAYZ_QUERY_HOST": config["host"], "DAYZ_QUERY_PORT": str(config["port"]["query"])})
+    print(arg)
     subprocess.Popen(shlex.split(arg), env=dayzEnv)
 
 def runz(config, mods=False):
