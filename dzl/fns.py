@@ -104,7 +104,7 @@ def serverInfoText(child, server):
     return f'{child["name"]}:(T:{server["time"]};P:{server["players"]}/{server["maxPlayers"]};{p})'
 
 def serverInfo(root, server, child, idx):
-    infoLabel = customtkinter.CTkLabel(master=root, text=serverInfoText(child, server), wraplength=800)
+    infoLabel = customtkinter.CTkLabel(master=root, text=serverInfoText(child, server), wraplength=800, font=("Arial", 25))
     infoLabel.grid(row=idx, column=0, padx=10)
     return infoLabel
 
@@ -118,13 +118,13 @@ def redrawServerList(root):
         if server and "mods" in server and len(server["mods"]) > 0:
             linkMods(server)
         infoLabel = serverInfo(root, server, child, idx)
-        customtkinter.CTkLabel(master=root, text=' ').grid(row=idx, column=2)
+        customtkinter.CTkLabel(master=root, text=' ', font=("Arial", 25)).grid(row=idx, column=2)
         if server != False:
-            runBtn = customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=server["-mod"]), fg_color="#fc6f6f", text_color="#473333")
+            runBtn = customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=server["-mod"]), fg_color="#fc6f6f", text_color="#473333", font=("Arial", 25))
         else:
-            runBtn = customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=False), fg_color="#fc6f6f", text_color="#473333")
+            runBtn = customtkinter.CTkButton(master=root, text="Run", command=runz(child, mods=False), fg_color="#fc6f6f", text_color="#473333", font=("Arial", 25))
         runBtn.grid(row=idx, column=3)
-        customtkinter.CTkButton(master=root, text="Reload", command=reloadEv(infoLabel, child, runBtn), fg_color="#ffd900", text_color="#474433").grid(row=idx, column=1)
+        customtkinter.CTkButton(master=root, text="Reload", command=reloadEv(infoLabel, child, runBtn), fg_color="#ffd900", text_color="#474433", font=("Arial", 25)).grid(row=idx, column=1)
 
 def linkMods(server):
     print('/////////////////////////////////////')
