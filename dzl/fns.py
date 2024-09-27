@@ -104,7 +104,7 @@ def serverInfoText(child, server):
     return f'{child["name"]}:(T:{server["time"]};P:{server["players"]}/{server["maxPlayers"]};{p})'
 
 def serverInfo(root, server, child, idx):
-    infoLabel = customtkinter.CTkLabel(master=root, text=serverInfoText(child, server), wraplength=800, font=("Arial", 25))
+    infoLabel = customtkinter.CTkLabel(master=root, text=serverInfoText(child, server), wraplength=1500, font=("Arial", 25))
     infoLabel.grid(row=idx, column=0, padx=10)
     return infoLabel
 
