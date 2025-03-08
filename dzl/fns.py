@@ -161,7 +161,9 @@ def appendServer(root):
         serverAppend(server)
 
 def queryServer(host, port):
-    response = requests.get(f"https://dayzsalauncher.com/api/v1/query/{host}/{port}")
+    qs = f"https://dayzsalauncher.com/api/v1/query/{host}/{port}"
+    print(qs)
+    response = requests.get(qs)
     resp = json.loads(response.text)
     if "error" in resp:
         return False
